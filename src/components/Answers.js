@@ -21,7 +21,6 @@ function Answers({
   );
 
   let stili = {};
-  if (questionNum === 0) stili.marginBottom = '8.8rem';
   if (windowWidth < 980) stili.marginBottom = '24rem';
   return (
     <div className="answers-box" style={stili}>
