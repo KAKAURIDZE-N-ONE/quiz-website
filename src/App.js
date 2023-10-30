@@ -257,8 +257,6 @@ export default function App() {
 
     [startTimeout, status, numberofquestions]
   );
-
-  console.log(numberofquestions);
   return (
     <div className="app">
       {status === 'choosing' && (
@@ -309,6 +307,7 @@ export default function App() {
             answered={answered}
             questionNum={questionNum}
           />
+          0
           {questionNum && (
             <Button
               className={'btn-previous'}
