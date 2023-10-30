@@ -520,6 +520,7 @@ progress::-webkit-progress-value {
 @media (max-width: 660px) {
   .quiz {
     width: 95%;
+    padding-bottom: 2rem;
   }
   .categories {
     grid-template-columns: 1fr;
