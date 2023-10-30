@@ -42,8 +42,8 @@ const fetchs = [
     num: 23,
   },
   {
-    category: 'Politics',
-    num: 24,
+    category: 'Video games',
+    num: 15,
   },
 ];
 
@@ -57,7 +57,7 @@ const initialState = {
   activeAnswer: null,
   answered: -1,
   attempt: 0,
-  time: 0,
+  time: null,
   startTimeout: false,
   difficultyofquestions: 'easy',
   numberofquestions: 10,
@@ -246,7 +246,7 @@ export default function App() {
         () =>
           dispatch({
             type: 'settimeout',
-            payload: randNums.length * SECS_PER_QUESTION,
+            payload: numberofquestions * SECS_PER_QUESTION,
           }),
         1000
       );
@@ -255,8 +255,10 @@ export default function App() {
       };
     },
 
-    [startTimeout, status]
+    [startTimeout, status, numberofquestions]
   );
+
+  console.log(numberofquestions);
   return (
     <div className="app">
       {status === 'choosing' && (
