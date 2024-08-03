@@ -1,57 +1,55 @@
-import React from 'react';
-import { useState } from 'react';
-import { useEffect, useReducer } from 'react';
-import './styles.css';
-import Loading from './components/Loading';
-import MainBox from './components/MainBox';
-import Score from './components/Score';
-import QuestinBox from './components/QuestinBox';
-import Button from './components/Button';
-import Header from './components/Header';
-import Categories from './components/Categories';
-import CategoryHeader from './components/CategoryHeader';
-import ButtonBack from './components/ButtonBack';
-import Answers from './components/Answers';
-import Timeout from './components/Timeout';
-import ProgressBar from './components/ProgressBar';
-import ChooseNumsAndTypes from './components/ChooseNumsAndTypes';
-
-const difficulty = ['easy', 'medium', 'hard'];
+import React from "react";
+import { useState } from "react";
+import { useEffect, useReducer } from "react";
+import "./styles.css";
+import Loading from "./components/Loading";
+import MainBox from "./components/MainBox";
+import Score from "./components/Score";
+import QuestinBox from "./components/QuestinBox";
+import Button from "./components/Button";
+import Header from "./components/Header";
+import Categories from "./components/Categories";
+import CategoryHeader from "./components/CategoryHeader";
+import ButtonBack from "./components/ButtonBack";
+import Answers from "./components/Answers";
+import Timeout from "./components/Timeout";
+import ProgressBar from "./components/ProgressBar";
+import ChooseNumsAndTypes from "./components/ChooseNumsAndTypes";
 
 const SECS_PER_QUESTION = 15;
 
 const fetchs = [
   {
-    category: 'Book',
+    category: "Book",
     num: 10,
   },
   {
-    category: 'Film',
+    category: "Film",
     num: 11,
   },
   {
-    category: 'Music',
+    category: "Music",
     num: 12,
   },
   {
-    category: 'Geography',
+    category: "Geography",
     num: 22,
   },
   {
-    category: 'History',
+    category: "History",
     num: 23,
   },
   {
-    category: 'Video games',
+    category: "Video games",
     num: 15,
   },
 ];
 
 const initialState = {
-  status: 'choosing',
+  status: "choosing",
   questions: [],
-  url: '',
-  heading: '',
+  url: "",
+  heading: "",
   score: 0,
   questionNum: 0,
   activeAnswer: null,
@@ -59,51 +57,51 @@ const initialState = {
   attempt: 0,
   time: null,
   startTimeout: false,
-  difficultyofquestions: 'easy',
+  difficultyofquestions: "easy",
   numberofquestions: 10,
   categoryofquestions: null,
 };
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'getcategory':
+    case "getcategory":
       return {
         ...state,
         heading: action.heading,
         categoryofquestions: action.payload,
-        status: 'ready',
+        status: "ready",
       };
-    case 'choosedifficulty':
+    case "choosedifficulty":
       return {
         ...state,
         difficultyofquestions: action.payload,
       };
-    case 'choosenum':
+    case "choosenum":
       return {
         ...state,
         numberofquestions: action.payload,
       };
-    case 'fetching':
+    case "fetching":
       return {
         ...state,
-        status: 'started',
+        status: "started",
         questions: action.payload,
       };
-    case 'loading':
+    case "loading":
       return {
         ...state,
-        status: 'loading',
+        status: "loading",
       };
     // case 'wehavedata':
     //   return { ...state, status: 'ready', questions: action.payload };
-    case 'start':
+    case "start":
       return {
         ...state,
         url: `https://opentdb.com/api.php?amount=${state.numberofquestions}&category=${state.categoryofquestions}&difficulty=${state.difficultyofquestions}&type=multiple`,
         startTimeout: !state.startTimeout,
       };
 
-    case 'activation':
+    case "activation":
       return {
         ...state,
         activeAnswer: action.payload,
@@ -118,30 +116,30 @@ function reducer(state, action) {
             : state.questionNum,
       };
 
-    case 'nextquestion':
+    case "nextquestion":
       return {
         ...state,
         questionNum: state.questionNum + 1,
         activeAnswer: null,
       };
 
-    case 'finishing':
+    case "finishing":
       return {
         ...state,
-        status: 'finish',
+        status: "finish",
       };
-    case 'previousquestion':
+    case "previousquestion":
       return {
         ...state,
         questionNum: state.questionNum - 1,
         activeAnswer: true,
       };
-    case 'retry':
+    case "retry":
       return {
         ...initialState,
         attempt: state.attempt + 1,
       };
-    case 'settimeout':
+    case "settimeout":
       if (state.time !== 0)
         return {
           ...state,
@@ -150,19 +148,21 @@ function reducer(state, action) {
       else
         return {
           ...state,
-          status: 'finish',
+          status: "finish",
         };
-    case 'settime':
+    case "settime":
       return {
         ...state,
         time: action.payload,
       };
-    case 'returnchoosingpage':
+    case "returnchoosingpage":
+      console.log("yes");
       if (action.unda === true) {
-        const confirmed = window.confirm('Do you want to exit the quiz?');
-        if (confirmed) return { ...initialState };
-        else return { ...state };
-      } else return { ...initialState };
+        const confirmed = window.confirm("Do you want to exit the quiz?");
+        if (confirmed) {
+          return { ...initialState, time: 150 };
+        } else return { ...state };
+      } else return { ...initialState, time: 150 };
     default:
   }
 }
@@ -184,22 +184,27 @@ export default function App() {
       startTimeout,
       difficultyofquestions,
       numberofquestions,
+      categoryofquestions,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
   /////////////////////////for screen width/////////////////////////////////////////
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  const category = fetchs?.find(
+    (el) => el?.num === categoryofquestions
+  )?.category;
+
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
   };
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Cleanup the event listener on component unmount
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []); // Empty dependency array means this effect runs once after the initial render
 
@@ -212,7 +217,7 @@ export default function App() {
         randNums.push(randNum);
       }
       dispatch({
-        type: 'settime',
+        type: "settime",
         payload: numberofquestions * SECS_PER_QUESTION,
       });
     },
@@ -221,13 +226,13 @@ export default function App() {
 
   useEffect(() => {
     async function getQuestions() {
-      if (url !== '')
+      if (url !== "")
         try {
-          dispatch({ type: 'loading' }); // Dispatch loading action before the fetch
+          dispatch({ type: "loading" }); // Dispatch loading action before the fetch
           const res = await fetch(url);
           const data = await res.json();
           // Check if the component is still mounted before updating state
-          dispatch({ type: 'fetching', payload: data });
+          dispatch({ type: "fetching", payload: data });
         } catch (err) {
           // Handle errors by dispatching an error action or displaying an error message
           console.error(err);
@@ -241,11 +246,11 @@ export default function App() {
 
   useEffect(
     function () {
-      if (status !== 'started') return;
+      if (status !== "started") return;
       const decline = setInterval(
         () =>
           dispatch({
-            type: 'settimeout',
+            type: "settimeout",
             payload: numberofquestions * SECS_PER_QUESTION,
           }),
         1000
@@ -259,34 +264,33 @@ export default function App() {
   );
   return (
     <div className="app">
-      {status === 'choosing' && (
+      {status === "choosing" && (
         <MainBox>
           <Header />
           <QuestinBox status="choosing">Choose a category</QuestinBox>
           <Categories fetchs={fetchs} dispatch={dispatch} />
         </MainBox>
       )}
-      {status === 'loading' && <Loading />}
-      {status === 'ready' && (
+      {status === "loading" && <Loading />}
+      {status === "ready" && (
         <MainBox>
           <Header>
             <ButtonBack dispatch={dispatch} />
           </Header>
           <ChooseNumsAndTypes
-            numberOfQuestions={questionNum.length}
-            difficulty={difficulty}
+            category={category}
             dispatch={dispatch}
             difficultyofquestions={difficultyofquestions}
             numberofquestions={numberofquestions}
           />
           <CategoryHeader>{heading}</CategoryHeader>
           <QuestinBox status={status}>Do you want to start quiz?</QuestinBox>
-          <Button className="btn-play" action={'start'} dispatch={dispatch}>
+          <Button className="btn-play" action={"start"} dispatch={dispatch}>
             Play
           </Button>
         </MainBox>
       )}
-      {status === 'started' && (
+      {status === "started" && (
         <MainBox questionNum={questionNum}>
           <ProgressBar index={questionNum} numQuestions={randNums.length} />
           <Header Style="progresbari">
@@ -295,12 +299,14 @@ export default function App() {
             <Timeout time={time}></Timeout>
           </Header>
           <QuestinBox status="started">
-            {questions.results[questionNum].question}
+            {questions?.results?.at(questionNum)?.question}
           </QuestinBox>
           <Answers
             windowWidth={windowWidth}
-            correctAnswer={questions.results[questionNum].correct_answer}
-            incorrectAnswers={questions.results[questionNum].incorrect_answers}
+            correctAnswer={questions?.results?.at(questionNum)?.correct_answer}
+            incorrectAnswers={
+              questions?.results?.at(questionNum)?.incorrect_answers
+            }
             activeAnswer={activeAnswer}
             dispatch={dispatch}
             randNum={randNums[questionNum]}
@@ -310,8 +316,8 @@ export default function App() {
           0
           {questionNum && (
             <Button
-              className={'btn-previous'}
-              action={'previousquestion'}
+              className={"btn-previous"}
+              action={"previousquestion"}
               dispatch={dispatch}
             >
               PREVIOUS
@@ -320,8 +326,8 @@ export default function App() {
           {(questionNum <= randNums.length - 2 && activeAnswer) ||
           answered >= questionNum ? (
             <Button
-              className={'btn-next'}
-              action={'nextquestion'}
+              className={"btn-next"}
+              action={"nextquestion"}
               dispatch={dispatch}
               answered={answered}
               questionNum={questionNum}
@@ -331,16 +337,16 @@ export default function App() {
           ) : null}
           {questionNum === randNums.length - 1 && activeAnswer && (
             <Button
-              className={'btn-next'}
+              className={"btn-next"}
               dispatch={dispatch}
-              action={'finishing'}
+              action={"finishing"}
             >
               FINISH
             </Button>
           )}
         </MainBox>
       )}
-      {status === 'finish' && (
+      {status === "finish" && (
         <MainBox>
           <Header></Header>
           <CategoryHeader
@@ -351,9 +357,9 @@ export default function App() {
             Quiz Completed
           </CategoryHeader>
           <Button
-            className={'btn-restart'}
+            className={"btn-restart"}
             dispatch={dispatch}
-            action={'retry'}
+            action={"retry"}
           >
             RESTART
           </Button>
