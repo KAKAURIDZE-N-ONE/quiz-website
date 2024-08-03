@@ -5,9 +5,6 @@ function ChooseNumsAndTypes({
   numberofquestions,
 }) {
   const difficulty1 = ["easy", "medium", "hard"];
-  const difficulty2 = ["medium", "hard"];
-  const difficulty3 = ["easy", "medium"];
-  const difficulty4 = ["easy", "hard"];
 
   let difficulty;
   // console.log(category);
